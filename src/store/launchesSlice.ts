@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getLacunches } from '../services/http/spaceX';
+import { getLacunches } from '../services/http/spaceX/launches';
 import { LaunchData } from '../dtos/spaceX/launches';
 
 

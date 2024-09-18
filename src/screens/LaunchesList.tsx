@@ -8,13 +8,13 @@ import { RootStackParamList } from '../../App';
 import Pagination from '../components/Pagination';
 import { useDebouncedState } from '../hooks/useDebouncedState';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LaunchesList'>;
 
 interface Props {
   navigation: HomeScreenNavigationProp;
 }
 
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
+const LaunchesList: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { launches, loading, pagination } = useSelector((state: RootState) => state.launchesReducer);
   const [searchTerm, setSearchTerm] = useDebouncedState('');
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
   launchItem: { padding: 10, borderBottomWidth: 1, borderColor: '#ccc' },
 });
 
-export default HomeScreen;
+export default LaunchesList;
