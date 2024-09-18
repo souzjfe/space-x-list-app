@@ -36,7 +36,6 @@ const LaunchesList: React.FC<Props> = ({ navigation }) => {
       setPage(page);
     });
   }
-  console.log(launches);
   return (
     <View>
       <TextInput

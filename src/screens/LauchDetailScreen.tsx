@@ -14,7 +14,6 @@ interface Props {
 
 const LaunchDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { launch } = route.params;
-  console.log(launch);
 
 
   return (
