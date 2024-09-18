@@ -4,7 +4,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import { WebView } from 'react-native-webview';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Video from '../components/Video';
+import VideoPlayer from '../components/VideoPlayer';
 type LaunchDetailsScreenRouteProp = RouteProp<RootStackParamList, 'LaunchDetails'>;
 type LaunchDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LaunchDetails'>;
 
@@ -24,8 +24,8 @@ const LaunchDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
       <Text>Date: {new Date(launch.date_utc).toLocaleDateString()}</Text>
     
       {launch.details && <Text>Details: {launch.details}</Text>}
-      {launch.links.webcast && (
-        <Video src={launch.links.webcast}/>
+      {launch.links.youtube_id && (
+        <VideoPlayer youtubeId={launch.links.youtube_id}/>
       )}
       <Button
       title={launch.links.article? 'Read Article' : 'No article available'}
