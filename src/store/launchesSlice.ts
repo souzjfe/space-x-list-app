@@ -1,41 +1,30 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { getLacunches } from '../services/http/spaceX';
+import { LaunchData } from '../dtos/spaceX/launches';
 
-interface Launch {
-  id: string;
-  name: string;
-  date_utc: string;
-  details: string;
-  links: {
-    youtube_id: string | null;
-    article: string | null;
-  };
-}
 
 interface LaunchState {
-  launches: Launch[];
+  launches: LaunchData[];
+  pagination: { 
+    totalPages: number;
+  }
   loading: boolean;
 }
 
 const initialState: LaunchState = {
   launches: [],
+  pagination: {
+    totalPages: 0,
+  },
   loading: false,
 };
 
-export const fetchLaunches = createAsyncThunk('launches/fetchLaunches', async () => {
-  const response = await axios.get('https://api.spacexdata.com/v4/launches');
-  return response.data;
-});
+export const fetchLaunches = createAsyncThunk('launches/fetchLaunches', getLacunches);
 
 const launchesSlice = createSlice({
   name: 'launches',
   initialState,
   reducers: {
-    searchByRocketName: (state, action) => {
-      state.launches = state.launches.filter((launch) =>
-        launch.name.toLowerCase().includes(action.payload.toLowerCase())
-      );
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -43,10 +32,10 @@ const launchesSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchLaunches.fulfilled, (state, action) => {
-        state.launches = action.payload;
+        state.launches = action.payload.launches;
+        state.pagination = action.payload.pagination;
         state.loading = false;
       });
   },
 });
-
 export default launchesSlice.reducer;

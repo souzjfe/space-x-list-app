@@ -5,6 +5,8 @@ import { fetchLaunches } from '../store/launchesSlice';
 import { RootState, AppDispatch } from '../store';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../App';
+import Pagination from '../components/Pagination';
+import { useDebouncedState } from '../hooks/useDebouncedState';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -14,41 +16,57 @@ interface Props {
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const launches = useSelector((state: RootState) => state.launches.launches);
-  const loading = useSelector((state: RootState) => state.launches.loading);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isPending, startTransition] = useTransition()
+  const { launches, loading, pagination } = useSelector((state: RootState) => state.launchesReducer);
+  const [searchTerm, setSearchTerm] = useDebouncedState('');
+  const [page, setPage] = useState(1);
+  const [isPending, startTransition] = useTransition();
   useEffect(() => {
-    dispatch(fetchLaunches());
-  }, [dispatch, searchTerm]);
+    dispatch(fetchLaunches({ name: searchTerm, page }));
+  }, [dispatch, searchTerm, page]);
 
-  const filteredLaunches = launches.filter((launch) =>
-    launch.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
+  const handleSearch = (text: string) => {
+    startTransition(() => {
+      setSearchTerm(text);
+      setPage(1);
+    })
+  }
+  const handlePageChange = (page: number) => {
+    startTransition(() => {
+      setPage(page);
+    });
+  }
+  console.log(launches);
   return (
     <View>
       <TextInput
         placeholder="Search Launches"
-        value={searchTerm}
-        onChangeText={setSearchTerm}
+        onChangeText={handleSearch}
         style={styles.input}
       />
-      {loading ? (
+      <Pagination
+        currentPage={page}
+        {...pagination}
+        onPageChange={handlePageChange}
+      />
+      {loading || isPending ? (
         <Text>Loading...</Text>
       ) : (
-        <FlatList
-          data={filteredLaunches}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
+        <>
+          <FlatList
+            data={launches}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity
               onPress={() => navigation.navigate('LaunchDetails', { launch: item })}
-            >
-              <Text style={styles.launchItem}>{item.name}</Text>
-            </TouchableOpacity>
-          )}
-        />
+              >
+                <Text style={styles.launchItem}>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </>
       )}
+      
     </View>
   );
 };
