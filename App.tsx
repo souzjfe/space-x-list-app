@@ -7,19 +7,12 @@ import LaunchDetailsScreen from './src/screens/LaunchDetailsScreen';
 import { store } from './src/store';
 import WebViewScreen from './src/screens/WebViewScreen';
 import { LaunchData } from './src/dtos/spaceX/launches';
-import launchesSlice from './src/store/launchesSlice';
-import { createStore } from '@reduxjs/toolkit';
 
 export type RootStackParamList = {
   LaunchesListScreen: undefined;
   LaunchDetails: { launch: LaunchData };
   WebViewScreen: { url: string, webViewName: string };
 };
-function reducer(ui, {
-  preloadedState,
-  store = createStore({ reducer: { launchesSlice }}),
-})
-
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
