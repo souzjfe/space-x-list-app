@@ -5,17 +5,14 @@ import { fetchLaunches } from '../../store/launchesSlice';
 import { renderWithProviders } from '../../utils/testsUnitsRedux';
 import { LaunchData } from '../../dtos/spaceX/launches';
 
-// Mock da navegação
 const mockNavigate = jest.fn();
 
-// Criar um mock para a navegação
 jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({
     navigate: mockNavigate,
   }),
 }));
 
-// Mock do dispatch para evitar realmente chamar a API
 jest.mock('../../store/launchesSlice', () => ({
   fetchLaunches: jest.fn(),
 }));
